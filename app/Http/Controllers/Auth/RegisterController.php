@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
+use App\Project;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -60,14 +62,23 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param  array  $data
-     * @return \App\User
+     * @return Builder|Model|User
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::query()->create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        Project::query()->create([
+            'name' => '收件夾',
+            'description' => '未分配專案的任務都會被分配到這裡',
+            'user_id' => $user->id,
+            'default' => true,
+        ]);
+
+        return $user;
     }
 }

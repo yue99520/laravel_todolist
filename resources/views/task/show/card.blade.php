@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        任務列表
+        {{ $title }} - 任務列表
     </div>
     <table class="table table-striped">
         <thead>

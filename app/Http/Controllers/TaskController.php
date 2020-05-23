@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskStoreRequest;
 use App\Http\Requests\TaskUpdateRequest;
+use App\Project;
 use App\Task;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -12,7 +14,7 @@ use Illuminate\Http\Response;
 class TaskController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of all tasks.
      *
      * @return Response
      */
@@ -20,10 +22,30 @@ class TaskController extends Controller
     {
         $userId = auth()->id();
         $tasks = Task::query()->where('user_id', "=", $userId)->get();
-        $tasks = $tasks->filter(function ($task) {
+        $tasks = $this->excludeDone($tasks);
+        return response()->view('task/index', ['tasks' => $tasks, 'title' => '全部']);
+    }
+
+    /**
+     *
+     * Display a listing of tasks in the project
+     * @param $id
+     * @return Response
+     */
+    public function tasksOfProject($id)
+    {
+        $userId = auth()->id();
+        $project = Project::query()->where('user_id', '=', $userId)->findOrFail($id);
+        $tasks = $project->tasks;
+        $tasks = $this->excludeDone($tasks);
+        return response()->view('task/index', ['tasks' => $tasks, 'title' => $project->name]);
+    }
+
+    private function excludeDone(Collection $tasks)
+    {
+        return $tasks->filter(function ($task) {
             return $task->done_at == null;
         });
-        return response()->view('task/index', ['tasks' => $tasks]);
     }
 
     /**
@@ -38,6 +60,10 @@ class TaskController extends Controller
         $task = new Task();
         $task->name = $validatedData['name'];
         $task->user_id = auth()->id();
+
+        $project = auth()->user()->getDefaultProject();
+        $task->project_id = $project->id;
+
         $task->save();
 
         return redirect()->route('task.index');
@@ -82,6 +108,7 @@ class TaskController extends Controller
         $task->name = $name;
         $task->user_id = auth()->id();
         $task->save();
+
         return redirect()->route('task.index');
     }
 
@@ -97,6 +124,7 @@ class TaskController extends Controller
         $task = Task::query()->where("user_id", "=", auth()->id())->findOrFail($id);
 
         $task->delete();
+
         return redirect()->route('task.index');
     }
 
@@ -105,6 +133,7 @@ class TaskController extends Controller
         $task = Task::query()->where("user_id", "=", auth()->id())->findOrFail($id);
         $task->done_at = now();
         $task->save();
+
         return redirect()->route('task.index');
     }
 }

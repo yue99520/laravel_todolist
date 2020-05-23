@@ -15,9 +15,16 @@ use Illuminate\Support\Facades\Route;
 */
 Auth::routes();
 
-Route::get('/', "TaskController@index")->middleware("auth");
+Route::get('/', "TaskController@index")
+    ->middleware("auth");
 
-Route::resource('task', 'TaskController')->middleware("auth");
+Route::resource('task', 'TaskController')
+    ->middleware("auth");
 
-Route::post('/task/done/{id}', 'TaskController@done')->name('task.done')->middleware("auth");
+Route::post('/task/done/{id}', 'TaskController@done')
+    ->name('task.done')
+    ->middleware("auth");
 
+Route::get('/task/of/project/{id}', 'TaskController@tasksOfProject')
+    ->name('task.of_project')
+    ->middleware('auth');

@@ -6,7 +6,7 @@
         <form method="POST" action="{{ route('task.store') }}">
             @csrf
             <div class="form-group row">
-                <label for="name" class="col-md-4 col-form-label text-md-right">任務</label>
+                <label for="name" class="col-md-4 col-form-label text-md-right">任務標題</label>
                 <div class="col-md-6">
                     <label>
                         <input name="name" type="text" class="form-control">
