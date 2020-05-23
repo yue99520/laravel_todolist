@@ -23,7 +23,7 @@ class TaskController extends Controller
         $tasks = $tasks->filter(function ($task) {
             return $task->done_at == null;
         });
-        return response()->view('task/list', ['tasks' => $tasks]);
+        return response()->view('task/index', ['tasks' => $tasks]);
     }
 
     /**

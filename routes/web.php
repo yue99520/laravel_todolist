@@ -13,30 +13,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', "TaskController@index")->middleware("auth");
-
 Auth::routes();
 
-//Route::group(['prefix' => '/task'], function () {
-//    Route::get('/index', 'TaskController@index')
-//        ->name('task_index');
-//
-//    Route::post('/store', 'TaskController@store')
-//        ->name('task_store');
-//
-//    Route::post('/done', 'TaskController@done')
-//        ->name('task_done');
-//
-//    Route::get('/edit', 'TaskController@edit')
-//        ->name('task_edit');
-//
-//    Route::post('/update', 'TaskController@update')
-//        ->name('task_update');
-//
-//    Route::post('/delete', 'TaskController@destroy')
-//        ->name('task_delete');
-//});
+Route::get('/', "TaskController@index")->middleware("auth");
 
 Route::resource('task', 'TaskController')->middleware("auth");
 
